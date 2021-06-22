@@ -35,6 +35,8 @@ function App() {
       const boards = [...boardsData];
       boards.push(response.data.board);
       setBoardsData(boards);
+      setTitle('');
+      setOwner('');
     }).catch((error) => {
       console.log("errororoorroor", error);
     });
@@ -51,11 +53,13 @@ function App() {
           <label>Title</label>
           <input
             type="text"
+            value={title}
             onChange={handleTitleChange}
             className={title.length === 0 ? 'invalid-form-input' : ''}></input>
           <label>Owner's Name</label>
           <input
             type="text"
+            value={owner}
             onChange={handleOwnerChange}
             className={owner.length === 0 ? 'invalid-form-input' : ''}></input>
           <p>Preview: {title} - {owner}</p>
@@ -166,9 +170,16 @@ const CardsList = (props) => {
         <h2>Create a New Card</h2>
         <form onSubmit={submitNewCard} className='new-card-form__form'>
           <label>Message</label>
-          <input type="text" onChange={handleMessageChange}></input>
+          <input
+            type="text"
+            className={message.length === 0 ? 'invalid-form-input' : ''}
+            onChange={handleMessageChange}
+            value={message}></input>
           <p>Preview: {message}</p>
-          <input type="Submit" className='new-card-form__form-submit-btn'></input>
+          <input
+            type="Submit"
+            disabled={(message.length === 0)}
+            className='new-card-form__form-submit-btn'></input>
         </form>
       </section>
     </section>)
