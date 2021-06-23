@@ -48,7 +48,7 @@ function App() {
   const handleTitleChange = (e) => { setTitle(e.target.value) };
   const handleOwnerChange = (e) => { setOwner(e.target.value) };
 
-  const [isBoardVisible, setIsBoardVisible] = useState(true);
+  const [isBoardFormVisible, setIsBoardFormVisible] = useState(true);
 
   const NewBoardForm = (<form onSubmit={submitNewBoard} className='new-board-form__form'>
           <label>Title</label>
@@ -70,7 +70,7 @@ function App() {
             className='new-board-form__form-submit-btn'></input>
         </form>);
 
-  const toggleNewBoardForm = () => {setIsBoardVisible(!isBoardVisible)}
+  const toggleNewBoardForm = () => {setIsBoardFormVisible(!isBoardFormVisible)}
 
   const deleteAll = () => {
     if (window.confirm('Are you really sure? Please be gentle with this demo.')) {
@@ -95,7 +95,7 @@ function App() {
         <section className="boards__container">
           <section>
             <h2>Boards</h2>
-            <ol class="boards__list">
+            <ol className="boards__list">
               {boardsElements}
             </ol>
           </section>
@@ -105,8 +105,8 @@ function App() {
           </section>
           <section className='new-board-form__container'>
             <h2>Create a New Board</h2>
-            {isBoardVisible ? NewBoardForm : ''}
-            <span onClick={toggleNewBoardForm} className='new-board-form__toggle-btn'>{isBoardVisible ? 'Hide New Board Form' : 'Show New Board Form'}</span>
+            {isBoardFormVisible ? NewBoardForm : ''}
+            <span onClick={toggleNewBoardForm} className='new-board-form__toggle-btn'>{isBoardFormVisible ? 'Hide New Board Form' : 'Show New Board Form'}</span>
           </section>
         </section>
         {selectedBoard.board_id ? <CardsList board={selectedBoard}></CardsList> : ''}
