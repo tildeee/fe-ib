@@ -7,6 +7,15 @@ const CardsList = (props) => {
 
   const [cardsData, setCardsData] = useState([]);
 
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/boards/${props.board.board_id}/cards`).then((response)=> {
+      setCardsData(response.data);
+    }).catch((error) => {
+      console.log('Error:', error);
+      alert('Couldn\'t get cards for this board.');
+    });
+  }, [props.board]);
+
   const deleteCardItem = (card) => {
     axios.delete(`${process.env.REACT_APP_BACKEND_URL}/boards/${props.board.board_id}/cards/${card.card_id}`).then((response) => {
       const newCardsData = cardsData.filter((existingCard) => {
@@ -14,7 +23,8 @@ const CardsList = (props) => {
       });
       setCardsData(newCardsData);
     }).catch((error) => {
-      console.log("errororoorroor", error);
+      console.log('Error:', error);
+      alert('Couldn\'t delete the card.');
     });
   };
 
@@ -25,10 +35,11 @@ const CardsList = (props) => {
       });
       setCardsData(newCardsData);
     }).catch((error) => {
-      console.log("errororoorroor", error);
+      console.log('Error:', error);
+      alert('Couldn\'t +1 the card.');
     });
   };
-  
+
   const cardElements = cardsData.map((card) => {
     return (<Card
         card={card}
@@ -36,27 +47,19 @@ const CardsList = (props) => {
         deleteCardItem={deleteCardItem}></Card>)
   });
 
-  useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/boards/${props.board.board_id}/cards`).then((response)=> {
-      setCardsData(response.data);
-    })
-  }, [props.board]);
-
-
   const postNewCard = (message) => {
     axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/boards/${props.board.board_id}/cards`,
         {message}
     ).then((response) => {
-      console.log("response datatst", response.data.card);
       const cards = [...cardsData];
       cards.push(response.data.card);
       setCardsData(cards);
     }).catch((error) => {
-      console.log("errororoorroor", error);
+      console.log('Error:', error);
+      alert('Couldn\'t create a new card.');
     });
   };
-
 
   return (<section className='cards__container'>
       <section>
