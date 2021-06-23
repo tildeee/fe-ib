@@ -75,7 +75,8 @@ function App() {
   const deleteAll = () => {
     if (window.confirm('Are you really sure? Please be gentle with this demo.')) {
       axios.delete(`${process.env.REACT_APP_BACKEND_URL}/destroy_all`).then((response) => {
-        setBoardsData([]);
+        console.log('response', response.data);
+        setBoardsData([response.data.default_board]);
         setSelectedBoard({
           title: '',
           owner: '',
