@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import Card from './Card';
 
 const CardsList = (props) => {
 
@@ -28,15 +29,10 @@ const CardsList = (props) => {
   };
   
   const cardElements = cardsData.map((card) => {
-    return (<div className='card-item'>
-      
-      <p className='card-item__message'>{card.message}</p>
-      <ul className='card-item__controls'>
-        <li><p>{card.likes_count} 💕</p></li>
-        <li><p onClick={() => plusOneCardItem(card)}>+1</p></li>
-        <li><p className='card-item__delete' onClick={() => deleteCardItem(card)}>Delete</p></li>
-      </ul>
-    </div>)
+    return (<Card
+        card={card}
+        plusOneCardItem={plusOneCardItem}
+        deleteCardItem={deleteCardItem}></Card>)
   });
 
   useEffect(() => {
