@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Card from './Card';
+import NewCardForm from './NewCardForm';
 
 const CardsList = (props) => {
 
@@ -41,8 +42,8 @@ const CardsList = (props) => {
     })
   }, [props.board]);
 
-  const submitNewCard = (e) => {
-    e.preventDefault();
+
+  const postNewCard = (message) => {
     axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/boards/${props.board.board_id}/cards`,
         {message}
@@ -51,14 +52,11 @@ const CardsList = (props) => {
       const cards = [...cardsData];
       cards.push(response.data.card);
       setCardsData(cards);
-      setMessage('');
     }).catch((error) => {
       console.log("errororoorroor", error);
     });
   };
 
-  const [message, setMessage] = useState('');
-  const handleMessageChange = (e) => { setMessage(e.target.value) };
 
   return (<section className='cards__container'>
       <section>
@@ -67,22 +65,7 @@ const CardsList = (props) => {
           {cardElements}
         </div>
       </section>
-      <section className='new-card-form__container'>
-        <h2>Create a New Card</h2>
-        <form onSubmit={submitNewCard} className='new-card-form__form'>
-          <label>Message</label>
-          <input
-            type="text"
-            className={((message.length === 0) || (message.length > 40)) ? 'invalid-form-input' : ''}
-            onChange={handleMessageChange}
-            value={message}></input>
-          <p>Preview: {message}</p>
-          <input
-            type="Submit"
-            disabled={((message.length === 0) || (message.length > 40))}
-            className='new-card-form__form-submit-btn'></input>
-        </form>
-      </section>
+      <NewCardForm postNewCard={postNewCard}></NewCardForm>
     </section>)
 };
 
