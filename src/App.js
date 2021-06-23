@@ -71,27 +71,46 @@ function App() {
 
   const toggleNewBoardForm = () => {setIsBoardVisible(!isBoardVisible)}
 
+  const deleteAll = () => {
+    if (window.confirm('Are you really sure? Please be gentle with this demo.')) {
+      axios.delete(`${process.env.REACT_APP_BACKEND_URL}/destroy_all`).then((response) => {
+        setBoardsData([]);
+        setSelectedBoard({
+          title: '',
+          owner: '',
+          board_id: null
+        });
+      }).catch((error) => {
+        console.log('Error:', error);
+        alert('Something went wrong! :(');
+      });
+    }
+  }
+
   return (
-    <div>
-      <h1>Inspiration Board</h1>
-      <section className="boards__container">
-        <section>
-          <h2>Boards</h2>
-          <ol>
-            {boardsElements}
-          </ol>
+    <div className="page__container">
+      <div className="content__container">
+        <h1>Inspiration Board</h1>
+        <section className="boards__container">
+          <section>
+            <h2>Boards</h2>
+            <ol class="boards__list">
+              {boardsElements}
+            </ol>
+          </section>
+          <section>
+            <h2>Selected Board</h2>
+            <p>{selectedBoard.board_id ? `${selectedBoard.title} by ${selectedBoard.owner}` : 'Select a Board from the Board List!'}</p>
+          </section>
+          <section className='new-board-form__container'>
+            <h2>Create a New Board</h2>
+            {isBoardVisible ? NewBoardForm : ''}
+            <span onClick={toggleNewBoardForm} className='new-board-form__toggle-btn'>{isBoardVisible ? 'Hide New Board Form' : 'Show New Board Form'}</span>
+          </section>
         </section>
-        <section>
-          <h2>Selected Board</h2>
-          <p>{selectedBoard.board_id ? `${selectedBoard.title} by ${selectedBoard.owner}` : 'Select a Board from the Board List!'}</p>
-        </section>
-        <section className='new-board-form__container'>
-          <h2>Create a New Board</h2>
-          {isBoardVisible ? NewBoardForm : ''}
-          <span onClick={toggleNewBoardForm} className='new-board-form__toggle-btn'>{isBoardVisible ? 'Hide New Board Form' : 'Show New Board Form'}</span>
-        </section>
-      </section>
-      {selectedBoard.board_id ? <CardsList board={selectedBoard}></CardsList> : ''}
+        {selectedBoard.board_id ? <CardsList board={selectedBoard}></CardsList> : ''}
+      </div>
+      <footer><span>This is a demo! Please be gentle!</span> Click <span onClick={deleteAll} className="footer__delete-btn">here</span> to delete all boards and cards!</footer>
     </div>
   );
 }
@@ -172,13 +191,13 @@ const CardsList = (props) => {
           <label>Message</label>
           <input
             type="text"
-            className={message.length === 0 ? 'invalid-form-input' : ''}
+            className={((message.length === 0) || (message.length > 40)) ? 'invalid-form-input' : ''}
             onChange={handleMessageChange}
             value={message}></input>
           <p>Preview: {message}</p>
           <input
             type="Submit"
-            disabled={(message.length === 0)}
+            disabled={((message.length === 0) || (message.length > 40))}
             className='new-card-form__form-submit-btn'></input>
         </form>
       </section>
