@@ -2,6 +2,8 @@ import './App.css';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import CardsList from './components/CardsList';
+import NewBoardForm from './components/NewBoardForm';
+import Board from './components/Board';
 
 function App() {
 
@@ -23,53 +25,24 @@ function App() {
 
   const boardsElements = boardsData.map((board) => {
     return (<li>
-      <div onClick={() => { selectBoard(board) }}>{board.title}</div>
+      <Board board={board} onBoardSelect={selectBoard}></Board>
     </li>)
   });
 
-  const submitNewBoard = (e) => {
-    e.preventDefault();
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/boards`, {
-      title, owner
-    }).then((response) => {
-      console.log("response datatst", response.data.board);
+  const createNewBoard = (newBoard) => {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/boards`, newBoard).then((response) => {
+      console.log("Response:", response.data.board);
       const boards = [...boardsData];
       boards.push(response.data.board);
       setBoardsData(boards);
-      setTitle('');
-      setOwner('');
     }).catch((error) => {
-      console.log("errororoorroor", error);
+      console.log('Error:', error);
+      alert('Couldn\'t create a new board.');
     });
-  };
+  }
 
-  const [title, setTitle] = useState('');
-  const [owner, setOwner] = useState('');
-  const handleTitleChange = (e) => { setTitle(e.target.value) };
-  const handleOwnerChange = (e) => { setOwner(e.target.value) };
 
   const [isBoardFormVisible, setIsBoardFormVisible] = useState(true);
-
-  const NewBoardForm = (<form onSubmit={submitNewBoard} className='new-board-form__form'>
-          <label>Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            className={title.length === 0 ? 'invalid-form-input' : ''}></input>
-          <label>Owner's Name</label>
-          <input
-            type="text"
-            value={owner}
-            onChange={handleOwnerChange}
-            className={owner.length === 0 ? 'invalid-form-input' : ''}></input>
-          <p>Preview: {title} - {owner}</p>
-          <input
-            type="Submit"
-            disabled={((title.length === 0) || (owner.length === 0))}
-            className='new-board-form__form-submit-btn'></input>
-        </form>);
-
   const toggleNewBoardForm = () => {setIsBoardFormVisible(!isBoardFormVisible)}
 
   const deleteAll = () => {
@@ -106,7 +79,7 @@ function App() {
           </section>
           <section className='new-board-form__container'>
             <h2>Create a New Board</h2>
-            {isBoardFormVisible ? NewBoardForm : ''}
+            {isBoardFormVisible ? <NewBoardForm createNewBoard={createNewBoard}></NewBoardForm> : ''}
             <span onClick={toggleNewBoardForm} className='new-board-form__toggle-btn'>{isBoardFormVisible ? 'Hide New Board Form' : 'Show New Board Form'}</span>
           </section>
         </section>
